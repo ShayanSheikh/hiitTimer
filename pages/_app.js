@@ -13,10 +13,10 @@ const TimerApp = () => {
   };
 
   const startTimer = () => {
-    const start = Date.now()
-    let diff, minutes, seconds;
+    const start = Date.now();
+    const countdownTimeSeconds = convertTimeToSeconds(countdownTime);
 
-    let countdownTimeSeconds = convertTimeToSeconds(countdownTime);
+    let diff, minutes, seconds;
 
     const countdownInterval = setInterval(() => {
       diff = countdownTimeSeconds - (((Date.now() - start) / 1000) | 0);
