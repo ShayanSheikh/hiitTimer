@@ -4,6 +4,7 @@ import { Input } from 'semantic-ui-react';
 
 const TimerApp = () => {
   const [countdownTime, setCountdownTime] = useState('');
+  const [timerRunning, setTimerRunning] = useState(false);
 
   const convertTimeToSeconds = time => {
     let minutes = parseInt(time.slice(0, 2)) * 60;
@@ -13,6 +14,8 @@ const TimerApp = () => {
   };
 
   const startTimer = () => {
+    setTimerRunning(true);
+
     const start = Date.now();
     const countdownTimeSeconds = convertTimeToSeconds(countdownTime);
 
@@ -30,6 +33,7 @@ const TimerApp = () => {
       setCountdownTime(`${minutes}${seconds}`);
 
       if (diff <= 0) {
+        setTimerRunning(false);
         clearInterval(countdownInterval);
       }
     });
@@ -46,17 +50,19 @@ const TimerApp = () => {
   };
 
   return (
-    <>
+    <div style={{ textAlign: 'center'}}>
       <Input
         action={{
+          disabled: true,
           color: 'blue',
           content: 'Start',
           onClick: () => startTimer()
         }}
+        size='massive'
         onChange={(e) => setCountdownTime(e.target.value.replace(/:+/gm, '').slice(-4))}
         value={timeFormatter(countdownTime)}
       />
-    </>
+    </div>
   )
 }
 export default TimerApp;
