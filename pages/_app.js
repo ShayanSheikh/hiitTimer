@@ -1,9 +1,11 @@
 import 'semantic-ui-css/semantic.css'
 import React, { useState } from 'react';
-import { Input } from 'semantic-ui-react';
+import { Input, Button } from 'semantic-ui-react';
 
 const TimerApp = () => {
   const [countdownTime, setCountdownTime] = useState('');
+  const [initCountdownTime, setInitCountdownTime] = useState('');
+  const [countdownInterval, setCountdownInterval] = useState();
   const [timerRunning, setTimerRunning] = useState(false);
 
   const convertTimeToSeconds = time => {
@@ -15,13 +17,14 @@ const TimerApp = () => {
 
   const startTimer = () => {
     setTimerRunning(true);
+    setInitCountdownTime(countdownTime);
 
     const start = Date.now();
     const countdownTimeSeconds = convertTimeToSeconds(countdownTime);
 
     let diff, minutes, seconds;
 
-    const countdownInterval = setInterval(() => {
+    setCountdownInterval(setInterval(() => {
       diff = countdownTimeSeconds - (((Date.now() - start) / 1000) | 0);
 
       minutes = (diff / 60) | 0;
@@ -36,7 +39,7 @@ const TimerApp = () => {
         setTimerRunning(false);
         clearInterval(countdownInterval);
       }
-    });
+    }));
   }
 
   const timeFormatter = time => {
@@ -49,18 +52,32 @@ const TimerApp = () => {
     return `${minutes}:${seconds}`
   };
 
+  const resetTimer = () => {
+    setCountdownTime(initCountdownTime);
+    setTimerRunning(false);
+    clearInterval(countdownInterval);
+  }
+
   return (
     <div style={{ textAlign: 'center'}}>
       <Input
-        action={{
-          disabled: true,
-          color: 'blue',
-          content: 'Start',
-          onClick: () => startTimer()
-        }}
-        size='massive'
         onChange={(e) => setCountdownTime(e.target.value.replace(/:+/gm, '').slice(-4))}
         value={timeFormatter(countdownTime)}
+        size='massive'
+      />
+      <Button
+        primary
+        content='Start'
+        onClick={() => startTimer()}
+        disabled={timerRunning}  
+        size='massive'      
+      />
+      <Button
+        secondary
+        content='Reset'
+        onClick={() => resetTimer()}
+        disabled={!timerRunning}
+        size='massive'
       />
     </div>
   )
